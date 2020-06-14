@@ -35,7 +35,7 @@ function css() { #{{{
 		<link rel='stylesheet' href='css/css.css'>
 	</head>
 	";
-	echo "$header";
+	if($_SESSION['console']==0) { echo "$header"; }
 }
 /*}}}*/
 function reportbug($details) {/*{{{*/

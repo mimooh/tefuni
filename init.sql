@@ -88,6 +88,18 @@ CREATE TABLE public.tefuni_input (
 ALTER TABLE public.tefuni_input OWNER TO tefuni;
 
 --
+-- Name: tefuni_teachers; Type: TABLE; Schema: public; Owner: tefuni
+--
+
+CREATE TABLE public.tefuni_teachers (
+    id integer,
+    short text
+);
+
+
+ALTER TABLE public.tefuni_teachers OWNER TO tefuni;
+
+--
 -- Name: tefuni_weeks; Type: TABLE; Schema: public; Owner: tefuni
 --
 
@@ -124,66 +136,66 @@ ALTER TABLE public.v_tefuni OWNER TO tefuni;
 --
 
 COPY public.tefuni_groups (gr, struct) FROM stdin;
-Erasmus	"labs":[[10]],"teachers":[[1]]
-Inne	"labs":[[16,15]],"teachers":[[2,2]]
-ND-BW4	"labs":[[13]],"teachers":[[2]]
-ND-BW5	"labs":[[15,15],[16,16]],"teachers":[[2,2],[2,2]]
-ND-BW6	"labs":[[20]],"teachers":[[2]]
-ND-P34	"labs":[[15,14],[15,14],[15,15],[13,13],[14,13],[13,13]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]
-ND-P35	"labs":[[15,16],[16,15],[13,13],[16,15],[12,12],[16,16]],"teachers":[[2,2],[2,2],[2,2],[2,2],[1,1],[2,2]]
-ND-P36	"labs":[[15,14],[14,14],[15,14],[15,15],[8,13],[14,13]],"teachers":[[2,2],[2,2],[2,2],[2,2],[1,2],[2,2]]
-ND-P37	"labs":[[15,15],[15,15],[15,15],[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]
-NP-C15	"labs":[[13]],"teachers":[[2]]
-NP-C16	"labs":[[19]],"teachers":[[2]]
-NP-CBW6	"labs":[[16]],"teachers":[[2]]
-NP-CBW7	"labs":[[8]],"teachers":[[1]]
-NP-CBW8	"labs":[[20]],"teachers":[[2]]
-NP-PC18	"labs":[[18],[18]],"teachers":[[2],[2]]
-NP-PC19	"labs":[[13],[13,13]],"teachers":[[2],[2,2]]
-NP-PC20	"labs":[[15,15]],"teachers":[[2,2]]
-NP-PC21	"labs":[[18]],"teachers":[[2]]
-NP-PC22	"labs":[[12,13]],"teachers":[[1,2]]
-NP-PC23	"labs":[[12,12],[12,12]],"teachers":[[1,1],[1,1]]
-NP-PS43	"labs":[[17,16],[18,16],[14,17],[17,15],[18,17],[15,14]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]
-NP-PS44	"labs":[[19,16],[16,17],[19,15],[17,16],[18,14],[13,14]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]
-NP-PS45	"labs":[[14,15],[15,16],[16,16],[15,15],[13,12],[15,15]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,1],[2,2]]
-NP-PS46	"labs":[[13,13],[15,16],[12,12],[14,14],[14,13],[17,17],[17,16]],"teachers":[[2,2],[2,2],[1,1],[2,2],[2,2],[2,2],[2,2]]
-NP-PS47A	"labs":[[15,15],[14,13],[15,14],[16,15]],"teachers":[[2,2],[2,2],[2,2],[2,2]]
-NP-PS47B	"labs":[[15,15],[14,14],[14,17]],"teachers":[[2,2],[2,2],[2,2]]
-NP-PS48A	"labs":[[15,15],[14,13],[15,14],[16,15]],"teachers":[[2,2],[2,2],[2,2],[2,2]]
-NP-PS48B	"labs":[[15,15],[14,14],[14,17]],"teachers":[[2,2],[2,2],[2,2]]
-SD-BW3	"labs":[[16,18]],"teachers":[[2,2]]
-SD-BW4	"labs":[[11]],"teachers":[[1]]
-SD-BW5	"labs":[[18]],"teachers":[[2]]
-SD-BW6	"labs":[[30]],"teachers":[[2]]
-SD-P12	"labs":[[13,22]],"teachers":[[2,2]]
-SD-P13	"labs":[[14,12]],"teachers":[[2,1]]
-SD-P14	"labs":[[12,12],[10,9]],"teachers":[[1,1],[1,1]]
-SD-P15	"labs":[[13,12],[11,12]],"teachers":[[2,1],[1,1]]
-SP-C17.IBC	"labs":[[26]],"teachers":[[2]]
-SP-C18.IBC	"labs":[[10,10]],"teachers":[[1,1]]
-SP-C18.IBPr	"labs":[[13,12]],"teachers":[[2,1]]
-SP-C19	"labs":[[9,9]],"teachers":[[1,1]]
-SP-CBW4.OL	"labs":[[20]],"teachers":[[2]]
-SP-CBW4.ZB	"labs":[[15]],"teachers":[[2]]
-SP-CBW5	"labs":[[35]],"teachers":[[2]]
-SP-CBW5.OL	"labs":[[17,18]],"teachers":[[2,2]]
-SP-CBW6	"labs":[[28]],"teachers":[[2]]
-SP-CBW6.ZB	"labs":[[15,15],[16,16]],"teachers":[[2,2],[2,2]]
-SP-CBW7	"labs":[[23]],"teachers":[[2]]
-SP-CBW8	"labs":[[15,15]],"teachers":[[2,2]]
-SP-PC15	"labs":[[16,15],[15,17]],"teachers":[[2,2],[2,2]]
-SP-PC16	"labs":[[17,16]],"teachers":[[2,2]]
-SP-PC17	"labs":[[15],[15]],"teachers":[[2],[2]]
-SP-PC18	"labs":[[11,10],[16]],"teachers":[[1,1],[2]]
-SP-PC19	"labs":[[14],[11,9],[10,9]],"teachers":[[2],[1,1],[1,1]]
-SP-PC20	"labs":[[12,12],[12,12],[12,12]],"teachers":[[1,1],[1,1],[1,1]]
-SP-PK15	"labs":[[14,15],[14,14],[15,15]],"teachers":[[2,2],[2,2],[2,2]]
-SP-PK16	"labs":[[15,15],[15,14],[15,15]],"teachers":[[2,2],[2,2],[2,2]]
-SP-PK17	"labs":[[13,12],[13,14],[13,16]],"teachers":[[2,1],[2,2],[2,2]]
-SP-PK18	"labs":[[14,14],[16,16],[15,15]],"teachers":[[2,2],[2,2],[2,2]]
-SP-PK19	"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]
-SP-PK20	"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]
+Erasmus	{"labs":[[10]],"teachers":[[1]]}
+Inne	{"labs":[[16,15]],"teachers":[[2,2]]}
+ND-BW4	{"labs":[[13]],"teachers":[[2]]}
+ND-BW5	{"labs":[[15,15],[16,16]],"teachers":[[2,2],[2,2]]}
+ND-BW6	{"labs":[[20]],"teachers":[[2]]}
+ND-P34	{"labs":[[15,14],[15,14],[15,15],[13,13],[14,13],[13,13]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
+ND-P35	{"labs":[[15,16],[16,15],[13,13],[16,15],[12,12],[16,16]],"teachers":[[2,2],[2,2],[2,2],[2,2],[1,1],[2,2]]}
+ND-P36	{"labs":[[15,14],[14,14],[15,14],[15,15],[8,13],[14,13]],"teachers":[[2,2],[2,2],[2,2],[2,2],[1,2],[2,2]]}
+ND-P37	{"labs":[[15,15],[15,15],[15,15],[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
+NP-C15	{"labs":[[13]],"teachers":[[2]]}
+NP-C16	{"labs":[[19]],"teachers":[[2]]}
+NP-CBW6	{"labs":[[16]],"teachers":[[2]]}
+NP-CBW7	{"labs":[[8]],"teachers":[[1]]}
+NP-CBW8	{"labs":[[20]],"teachers":[[2]]}
+NP-PC18	{"labs":[[18],[18]],"teachers":[[2],[2]]}
+NP-PC19	{"labs":[[13],[13,13]],"teachers":[[2],[2,2]]}
+NP-PC20	{"labs":[[15,15]],"teachers":[[2,2]]}
+NP-PC21	{"labs":[[18]],"teachers":[[2]]}
+NP-PC22	{"labs":[[12,13]],"teachers":[[1,2]]}
+NP-PC23	{"labs":[[12,12],[12,12]],"teachers":[[1,1],[1,1]]}
+NP-PS43	{"labs":[[17,16],[18,16],[14,17],[17,15],[18,17],[15,14]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
+NP-PS44	{"labs":[[19,16],[16,17],[19,15],[17,16],[18,14],[13,14]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
+NP-PS45	{"labs":[[14,15],[15,16],[16,16],[15,15],[13,12],[15,15]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,1],[2,2]]}
+NP-PS46	{"labs":[[13,13],[15,16],[12,12],[14,14],[14,13],[17,17],[17,16]],"teachers":[[2,2],[2,2],[1,1],[2,2],[2,2],[2,2],[2,2]]}
+NP-PS47A	{"labs":[[15,15],[14,13],[15,14],[16,15]],"teachers":[[2,2],[2,2],[2,2],[2,2]]}
+NP-PS47B	{"labs":[[15,15],[14,14],[14,17]],"teachers":[[2,2],[2,2],[2,2]]}
+NP-PS48A	{"labs":[[15,15],[14,13],[15,14],[16,15]],"teachers":[[2,2],[2,2],[2,2],[2,2]]}
+NP-PS48B	{"labs":[[15,15],[14,14],[14,17]],"teachers":[[2,2],[2,2],[2,2]]}
+SD-BW3	{"labs":[[16,18]],"teachers":[[2,2]]}
+SD-BW4	{"labs":[[11]],"teachers":[[1]]}
+SD-BW5	{"labs":[[18]],"teachers":[[2]]}
+SD-BW6	{"labs":[[30]],"teachers":[[2]]}
+SD-P12	{"labs":[[13,22]],"teachers":[[2,2]]}
+SD-P13	{"labs":[[14,12]],"teachers":[[2,1]]}
+SD-P14	{"labs":[[12,12],[10,9]],"teachers":[[1,1],[1,1]]}
+SD-P15	{"labs":[[13,12],[11,12]],"teachers":[[2,1],[1,1]]}
+SP-C17.IBC	{"labs":[[26]],"teachers":[[2]]}
+SP-C18.IBC	{"labs":[[10,10]],"teachers":[[1,1]]}
+SP-C18.IBPr	{"labs":[[13,12]],"teachers":[[2,1]]}
+SP-C19	{"labs":[[9,9]],"teachers":[[1,1]]}
+SP-CBW4.OL	{"labs":[[20]],"teachers":[[2]]}
+SP-CBW4.ZB	{"labs":[[15]],"teachers":[[2]]}
+SP-CBW5	{"labs":[[35]],"teachers":[[2]]}
+SP-CBW5.OL	{"labs":[[17,18]],"teachers":[[2,2]]}
+SP-CBW6	{"labs":[[28]],"teachers":[[2]]}
+SP-CBW6.ZB	{"labs":[[15,15],[16,16]],"teachers":[[2,2],[2,2]]}
+SP-CBW7	{"labs":[[23]],"teachers":[[2]]}
+SP-CBW8	{"labs":[[15,15]],"teachers":[[2,2]]}
+SP-PC15	{"labs":[[16,15],[15,17]],"teachers":[[2,2],[2,2]]}
+SP-PC16	{"labs":[[17,16]],"teachers":[[2,2]]}
+SP-PC17	{"labs":[[15],[15]],"teachers":[[2],[2]]}
+SP-PC18	{"labs":[[11,10],[16]],"teachers":[[1,1],[2]]}
+SP-PC19	{"labs":[[14],[11,9],[10,9]],"teachers":[[2],[1,1],[1,1]]}
+SP-PC20	{"labs":[[12,12],[12,12],[12,12]],"teachers":[[1,1],[1,1],[1,1]]}
+SP-PK15	{"labs":[[14,15],[14,14],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
+SP-PK16	{"labs":[[15,15],[15,14],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
+SP-PK17	{"labs":[[13,12],[13,14],[13,16]],"teachers":[[2,1],[2,2],[2,2]]}
+SP-PK18	{"labs":[[14,14],[16,16],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
+SP-PK19	{"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
+SP-PK20	{"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
 \.
 
 
@@ -429,7 +441,6 @@ COPY public.tefuni_input (id, gr, semester, form, subject, hours, blocks, subjec
 6329	SP-C18.IBPr	5	exc	Prosem.dyp	15	2,2,2,2	Proseminarium dyplomowe
 6373	SP-C18.IBPr	6	lab	Erg.pro.sta	30	2,2,2,2	Ergonomia i projektowanie stanowisk pracy
 6381	SP-C18.IBPr	6	lab	Pra.pom	30	2,2,2,2	Praktyki pomiarowe
-6427	SP-PK19	2	lab	Tec.inf	30	2,2,2,2	Technologie informacyjne
 6498	SP-PK19	2	lab	Fizyka	30	2,2,2,2	Fizyka
 6551	NP-PS47A	2	lab	Fizyka	18	2,2,2,2	Fizyka
 6616	NP-PS47A	2	lab	Tec.inf	18	2,2,2,2	Technologie informacyjne
@@ -1280,6 +1291,215 @@ COPY public.tefuni_input (id, gr, semester, form, subject, hours, blocks, subjec
 6960	NP-CBW7	2	exc	Org.i.zar	9	2,0,2,0	Organizacja i zarządzanie
 6968	NP-CBW7	1	exc	Org.fun.adm.pub	9	2,0,2,0	Organizacja i funkcjonowanie administracji publicznej
 6970	NP-CBW7	1	exc	Och.wła.int	9	2,0,2,0	Ochrona własności intelektualnej
+6427	SP-PK19	2	lab	Tec.inf	30	2,0,2,0	Technologie informacyjne
+\.
+
+
+--
+-- Data for Name: tefuni_teachers; Type: TABLE DATA; Schema: public; Owner: tefuni
+--
+
+COPY public.tefuni_teachers (id, short) FROM stdin;
+638	Bih.Ja
+658	Gab.Al
+375	Ciu.Ma
+7	Sob.Mi
+174	Gaw.Wi
+27	Prę.An
+86	Smo.Ma
+1395	Fur.Ra
+185	Gro.Pa
+38	Jas.Wa
+78	Wol.Je
+598	Rak.Jo
+343	Tyr.Ka
+258	Kuk.Bo
+235	Łuk.An
+254	Spy.Be
+124	Lip.St
+158	Mar.An
+28	Dom.Ag
+199	Wąs.Wi
+5	Kup.Wł
+649	Jak.We
+721	Dur.Do
+591	Goł.An
+16	Try.Mo
+114	Osz.Ma
+1375	Maz.An
+569	Zdz.To
+719	Cze.Ka
+543	Bra.Ad
+1407	Pią.Pi
+44	Sta.El
+110	Den.Sł
+147	Kró.Be
+604	Bed.Ka
+229	Las.Ag
+209	Fli.Ma
+713	Lew.Sy
+573	Zub.Łu
+195	Pta.Sz
+558	Rud.Ew
+495	Wdo.To
+1406	Śni.Ba
+30	Łaz.St
+29	Kra.Ad
+77	Soc.Ma
+645	Mak.Ra
+224	Ost.Ag
+475	Miz.An
+472	Bar.Br
+675	Bad.Ar
+714	Gór.Ag
+269	Bar.Da
+494	Ter.Ta
+136	Boc.Ja
+208	Kra.An
+1398	Sta.Kr
+659	Biń.An
+161	Sza.An
+71	Waw.Pi
+238	Dmo.An
+168	Obu.To
+34	Pec.Ma
+4	Gąs.Mi
+95	Had.Ew
+493	Żół.Jo
+58	Bud.Kr
+526	Kuz.Łu
+570	Kos.Mi
+144	Wys.Pr
+1376	Kus.Pi
+196	Jak.Ja
+445	Wol.Wa
+210	Bin.Jo
+43	Gał.Je
+1372	Lor.Da
+151	Wró.Pa
+640	Pow.Al
+602	Gło.An
+80	Wal.Ko
+74	Rat.Da
+69	Paw.An
+587	Bog.An
+718	Pie.Pi
+611	Kon.Ma
+1373	Dąb.An
+654	Now.Ar
+538	Pół.Ma
+420	Chę.Re
+1374	Mak.An
+90	Sul.Pa
+157	Tuś.No
+121	Kra.Sy
+551	McI.Al
+549	Wiś.Be
+167	Kli.To
+1362	Pro.Pi
+99	Kon.Ma
+207	Kal.Ja
+473	Ken.Ag
+607	Pol.An
+715	Wró.Wo
+192	Mat.Ra
+437	Elb.St
+285	Zia.Ew
+378	Mir.Ma
+178	Tof.Pi
+113	Ols.Li
+48	Ryb.Ja
+485	Ośc.Ba
+180	Ter.Pi
+97	Wło.An
+503	Koc.An
+104	Bie.St
+31	Drz.To
+39	Dzi.Gr
+481	Czu.To
+109	Dwo.St
+1377	Zuż.Kr
+509	Stę.Jó
+122	Lub.An
+159	Jar.Wo
+601	Wie.Ju
+484	Org.Zy
+6	Wnę.Wa
+636	Rog.Wi
+624	Sok.An
+1390	Ans.Ma
+1397	Tym.Ja
+422	Kam.Re
+33	Cis.Ma
+555	Por.Ra
+323	Mal.Jo
+131	Pie.Da
+26	Kub.Pr
+340	Jar.Ka
+470	Szc.Mo
+540	Gro.Ry
+101	Kie.Sy
+639	Gir.Ma
+57	Kęp.Pa
+60	Bro.Sł
+64	Bud.Zd
+571	Zie.An
+197	Sut.Mo
+32	Byl.Pr
+194	Łap.Ma
+137	Łąc.Kr
+23	Kot.Gr
+12	Naw.Ir
+212	Kol.Ra
+660	Gul.Ma
+182	Paw.Te
+712	Gay.An
+62	Chr.Ja
+59	Mic.Jo
+83	Wol.Ma
+11	Woj.Ra
+138	Zar.Ja
+702	Mar.Ag
+641	Żac.Pi
+68	Chu.Pi
+190	Sow.Mi
+25	Kre.Ka
+626	Kol.Pi
+198	Wal.Ag
+142	Ogr.Gr
+674	Adi.Ad
+1399	Woc.Ma
+24	Cis.Gr
+53	Fil.Le
+22	Kow.Pr
+438	Bor.Sy
+271	Gan.Do
+1347	Kuc.Łu
+193	Węs.To
+19	Sal.Zd
+20	Ogr.Pa
+377	Maj.Ma
+614	Ada.Ma
+542	Ber.Ja
+247	Szy.Ba
+206	Zwę.To
+67	Pie.Ro
+618	Jaw.Mi
+615	Maj.An
+594	Woj.Mo
+507	Tel.Ok
+567	Węg.Ma
+305	Gra.Iz
+574	Sob.Gr
+1294	Koz.Jo
+21	Kwia.Ma
+215	Giki.Ma
+342	Bral.Ka
+186	Wrób.Ra
+165	Fran.Ew
+541	Kęso.Ta
+234	Kuła.An
+666	Nepe.Ma
 \.
 
 

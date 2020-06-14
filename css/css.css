@@ -116,9 +116,6 @@ answer {
 }
 
 msg, fatal, cannot {
-	z-index: 999;
-	position:fixed;
-	left:0px;
 	min-height: 30px;
 	top:100px;
     text-align:center;
