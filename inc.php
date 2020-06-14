@@ -78,3 +78,35 @@ function querydd($qq,$arr=[]){ /*{{{*/
 	return array();
 }
 /*}}}*/
+
+function pg_nulls($arr) { #{{{
+	foreach($arr as $k=>$v) {
+		$arr[$k]=trim($v);
+		if(!is_int($v) && $v=='') {
+			$arr[$k]="\N";
+		}
+	}
+	return $arr;
+}
+/*}}}*/
+function copy_query($table, $keys, $arr) {#{{{
+	// call: copy_query("pracownicy", "nazwisko,imie", [ ['Kowalski', 'Jan'], ['Kowal', 'Janina'] ])
+
+	$copy=[];
+	foreach(array_filter($arr) as $v) {
+		$copy[]=implode("\t", pg_nulls($v));
+	}
+
+	$q="COPY $table ($keys) FROM stdin;\n";
+	$q.=implode("\n", $copy);
+	$q.="\n";
+	$q.="\.\n";
+	$q.="\n";
+	$tmpfname = tempnam("/tmp", "sonda");
+	file_put_contents($tmpfname, $q);
+	$z=file_get_contents("$tmpfname");
+	exec("cat $tmpfname | psql -U tefuni tefuni 2>&1", $out);
+	if(!preg_match("/^COPY /", $out[0])) { die($out[0]); }
+}
+/*}}}*/
+

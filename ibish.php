@@ -6,15 +6,9 @@ require_once("inc.php") ;
 # echo "update tefuni_groups set struct='{' || struct || '}';" | psql tefuni
 # echo "alter table tefuni_input alter column id type serial;" | psql tefuni
 
-# echo "select * from tefuni_teachers" | psql tefuni
+# echo "select * from tefuni_assign" | psql tefuni
 # echo "select * from tefuni_input" | psql tefuni
 # echo "select * from v_tefuni" | psql tefuni
-# echo "\d tefuni_input" | psql tefuni
-# echo "update tefuni_input set blocks='0,2,0,2' where mod(id,2)=1 and hours<10;" | psql tefuni
-# echo "create table tefuni_teachers as (select id,short from pracownicy where dydaktyk=1)" | psql cia
-# pg_dump -d cia -c -C -t tefuni_teachers > t.sql
-# psql -d tefuni -f  t.sql
-$_SESSION['tefuni_year']=2020;
 $_SESSION['tefuni_week']='2020.01';
 if(empty($_SESSION['select_subject'])) { $_SESSION['select_subject']=''; }
 if($_SESSION['console']==1) { 
@@ -22,7 +16,7 @@ if($_SESSION['console']==1) {
 	$_GET['edit']=6485;
 }
 
-function form_subject() { #{{{
+function subjects_droplist() { #{{{
 	if($_SESSION['console']==1) { return; }
 	$r=query("select distinct subject,subjectf from v_tefuni order by subjectf");
 	echo "<form method=post> <select name=select_subject onchange='this.form.submit()'>";
@@ -34,24 +28,46 @@ function form_subject() { #{{{
 
 }
 /*}}}*/
+function teachers_droplist($week, $id) { #{{{
+	# echo "create table tefuni_assign (id serial primary key, tefuni_id int, teacher_id int, week text, hours int)" | psql tefuni
+	# echo "select * from v_tefuni_assign" | psql tefuni
+	$t_row=[];
+	$r=query("select * from v_tefuni_assign where tefuni_id=$1 and week=$2 order by name, hours desc", array($id, $week));
+	foreach($r as $k=>$v) {
+		$t_row[]=array($v['teacher_id'], $v['name'], $v['hours']);
+	}
+
+	for($i=count($t_row); $i<8; $i++) {
+		$t_row[]=array(null, null, null);
+	}
+	echo "<tr><td>$week";
+	foreach($t_row as $k=>$v) {
+		echo "<td><select name=select_teachers[$week][]>";
+		echo "<option value=$v[0]>$v[1]</option>";
+		foreach(query("select * from tefuni_teachers order by name") as $tt) {
+			echo "<option value='$tt[id]'>$tt[name]</option>";
+		}
+		echo "</select>&nbsp; ";
+		echo "<input style='background-color: #424; width:16px' type=text name=hours[$week][] value=$v[2]>";
+	}
+}
+/*}}}*/
 
 function update() {/*{{{*/
-	# psql cia -c "SELECT * FROM v_prowadzacy where ramowy_id=4560";
-	# psql cia -c "SELECT * FROM ramowy where przedmiot_id=256";
+	# echo "select * from v_tefuni_assign" | psql tefuni
 	if(empty($_POST['update'])) { return; }
-	dd($_POST);
-	exit();
-	foreach($_POST['prowadzacy_godzin'] as $k=>$v) { 
-		$_POST['prowadzacy_godzin'][$k]+=0;
-	}
-	query("DELETE FROM ramowy_prowadzacy WHERE ramowy_id=$1 AND rok=$2", array($_GET['edit'], $_SESSION['tef_year']));
+	query("DELETE FROM tefuni_assign WHERE tefuni_id=$1", array($_POST['tefuni_id']));
 
-	foreach($_POST['prowadzacy'] as $k=>$i) { 
-		if(!empty($i)) { 
-			query("INSERT INTO ramowy_prowadzacy (wykladowca_id,ramowy_id,rok,godzin) values($1,$2,$3,$4)", array($i,$_GET['edit'], $_POST['rok'], $_POST['prowadzacy_godzin'][$k]));
+	$copy=[];
+	foreach($_POST['select_teachers'] as $week=>$teachers) { 
+		foreach($teachers as $pp=>$t) {
+			if(!empty($t) and !empty($_POST['hours'][$week][$pp])) { 
+				$copy[]=array('tefuni_id'=>$_POST['tefuni_id'], 'teacher_id'=>$t, 'week'=>$week, 'hours'=>$_POST['hours'][$week][$pp]);
+			}
 		}
 	}
-	header("Location: ibish.php");
+	copy_query("tefuni_assign", "tefuni_id,teacher_id,week,hours", $copy);
+	header("Location: ibish.php?edit=$_POST[tefuni_id]");
 }
 /*}}}*/
 function count_per_forma($arr) {/*{{{*/
@@ -106,26 +122,22 @@ function structs($v) { /*{{{*/
 	return $v;
 }
 /*}}}*/
-function edit_form() {/*{{{*/
+function edit() {/*{{{*/
 	# echo "select * from v_tefuni" | psql tefuni
-	# echo "update tefuni_input set blocks='2,0,2,0' where id=6427" | psql tefuni
 	if(!isset($_GET['edit'])) { return; }
 	echo "<a class=blink href=ibish.php>Back</a><br><br>";
 	$r=query("SELECT * FROM v_tefuni WHERE id=$1", array($_GET['edit'])); 
 	$structs=structs($r[0]);
-	echo "<br><br><form method=post action=?edit=$_GET[edit]>";
+	echo "<form method=post action=?edit=$_GET[edit]>";
 	echo "<input type=hidden name=update value=1>";
-	echo "<input autocomplete=off type=submit value=Save>";
-	echo "<table>\n";
+	echo "<input type=hidden name=tefuni_id value=$_GET[edit]>";
+	echo "<br><grupa>$structs[gr]</grupa> $structs[subjectf] ".color_form($structs['form']);
+	echo "<br><br><input autocomplete=off type=submit value=Save>";
+	echo "<table class=nowrap><tr><th>week<th>teacher1<th>teacher2 <th>teacher3<th>teacher4 <th>teacher5<th>teacher7 <th>teacher7<th>teacher8";
 	foreach($structs['weeks'] as $k=>$v) {
-		dd($k);
+		teachers_droplist($k, $_GET['edit']);
 	}
-	exit();
-	$fp=teachers_droplist($r[0]);
-
-	echo "<tr><td colspan=3>";
 	echo "</table>";
-	echo "<table class=nowrap><tr><th>week<th>teacher1<th>teacher2 <th>teacher3<th>teacher4 <th>teacher5<th>teacher7 <th>teacher7<th>teacher8 $fp[0]</table>";
 	echo "</form>";
 
 }
@@ -141,17 +153,10 @@ function color_form($form) {/*{{{*/
 /*}}}*/
 
 function listing() {/*{{{*/
-	# echo "drop table tefuni_input; create table tefuni_input as select id,corka as gr,semestr as semester, forma as form,przedmiot as subject, godzin as hours,'' as blocks, przedmiot_full as subjectf from v_ramowy where rok=2019 order by id; update tefuni_input set form='lec' where form='wyk'; update tefuni_input set form='exc' where form='ćw'; update tefuni_input set form='exc' where form='ćw.proj'; delete from tefuni_input where form is null or form='' or form='--' or form='tylko.egz'; update tefuni_input set blocks='2,2,2,2'; update tefuni_input set blocks='0,2,0,2' where mod(id,2)=1 and hours<10; update tefuni_input set blocks='2,0,2,0' where mod(id,2)=0 and hours<10; select * from tefuni_input order by id;" | psql cia
-	# pg_dump -d tefuni > db.sql
-	# echo "drop table tefuni_input cascade;" | psql tefuni
-	# psql -d tefuni -f t.sql
-	# echo "select * from v_tefuni" | psql tefuni
-	# echo "select * from tefuni_input order by id" | psql tefuni
-	# echo "ALTER TABLE public.tefuni_input OWNER TO tefuni;" | psql tefuni
 
 	if(!empty($_GET['edit']))   { return; }
 	if($_SESSION['console']==1) { return; }
-	form_subject();
+	subjects_droplist();
 	$raport="";
 	$raport.="<tr><th>form<th>semester<th>subject<th>group";
 
@@ -172,7 +177,7 @@ function main() {/*{{{*/
 	css();
 	select_subject();
 	update();
-	edit_form();
+	edit();
 	listing();
 }
 /*}}}*/

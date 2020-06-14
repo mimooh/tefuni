@@ -58,6 +58,43 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: tefuni_assign; Type: TABLE; Schema: public; Owner: tefuni
+--
+
+CREATE TABLE public.tefuni_assign (
+    id integer NOT NULL,
+    tefuni_id integer,
+    teacher_id integer,
+    week text,
+    hours integer
+);
+
+
+ALTER TABLE public.tefuni_assign OWNER TO tefuni;
+
+--
+-- Name: tefuni_assign_id_seq; Type: SEQUENCE; Schema: public; Owner: tefuni
+--
+
+CREATE SEQUENCE public.tefuni_assign_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tefuni_assign_id_seq OWNER TO tefuni;
+
+--
+-- Name: tefuni_assign_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: tefuni
+--
+
+ALTER SEQUENCE public.tefuni_assign_id_seq OWNED BY public.tefuni_assign.id;
+
+
+--
 -- Name: tefuni_groups; Type: TABLE; Schema: public; Owner: tefuni
 --
 
@@ -93,7 +130,7 @@ ALTER TABLE public.tefuni_input OWNER TO tefuni;
 
 CREATE TABLE public.tefuni_teachers (
     id integer,
-    short text
+    name text
 );
 
 
@@ -130,6 +167,45 @@ CREATE VIEW public.v_tefuni AS
 
 
 ALTER TABLE public.v_tefuni OWNER TO tefuni;
+
+--
+-- Name: v_tefuni_assign; Type: VIEW; Schema: public; Owner: tefuni
+--
+
+CREATE VIEW public.v_tefuni_assign AS
+ SELECT a.id,
+    a.tefuni_id,
+    a.teacher_id,
+    a.week,
+    a.hours,
+    t.name
+   FROM (public.tefuni_assign a
+     LEFT JOIN public.tefuni_teachers t ON ((a.teacher_id = t.id)));
+
+
+ALTER TABLE public.v_tefuni_assign OWNER TO tefuni;
+
+--
+-- Name: tefuni_assign id; Type: DEFAULT; Schema: public; Owner: tefuni
+--
+
+ALTER TABLE ONLY public.tefuni_assign ALTER COLUMN id SET DEFAULT nextval('public.tefuni_assign_id_seq'::regclass);
+
+
+--
+-- Data for Name: tefuni_assign; Type: TABLE DATA; Schema: public; Owner: tefuni
+--
+
+COPY public.tefuni_assign (id, tefuni_id, teacher_id, week, hours) FROM stdin;
+142	6942	614	31.08-06.09	5
+143	6942	614	31.08-06.09	2
+144	6942	1390	31.08-06.09	4
+145	6942	269	07.09-13.09	6
+146	6942	674	07.09-13.09	5
+147	6942	674	14.09-20.09	4
+148	6942	1390	14.09-20.09	22
+\.
+
 
 --
 -- Data for Name: tefuni_groups; Type: TABLE DATA; Schema: public; Owner: tefuni
@@ -1299,7 +1375,7 @@ COPY public.tefuni_input (id, gr, semester, form, subject, hours, blocks, subjec
 -- Data for Name: tefuni_teachers; Type: TABLE DATA; Schema: public; Owner: tefuni
 --
 
-COPY public.tefuni_teachers (id, short) FROM stdin;
+COPY public.tefuni_teachers (id, name) FROM stdin;
 638	Bih.Ja
 658	Gab.Al
 375	Ciu.Ma
@@ -1492,14 +1568,14 @@ COPY public.tefuni_teachers (id, short) FROM stdin;
 305	Gra.Iz
 574	Sob.Gr
 1294	Koz.Jo
-21	Kwia.Ma
-215	Giki.Ma
-342	Bral.Ka
-186	Wrób.Ra
-165	Fran.Ew
-541	Kęso.Ta
-234	Kuła.An
-666	Nepe.Ma
+21	Kwi.Ma
+215	Gik.Ma
+342	Bra.Ka
+186	Wró.Ra
+165	Fra.Ew
+541	Kęs.Ta
+234	Kuł.An
+666	Nep.Ma
 \.
 
 
@@ -1510,6 +1586,21 @@ COPY public.tefuni_teachers (id, short) FROM stdin;
 COPY public.tefuni_weeks (meta, weeks) FROM stdin;
 2020.01	[ "31.08-06.09", "07.09-13.09", "14.09-20.09", "21.09-27.09" ] 
 \.
+
+
+--
+-- Name: tefuni_assign_id_seq; Type: SEQUENCE SET; Schema: public; Owner: tefuni
+--
+
+SELECT pg_catalog.setval('public.tefuni_assign_id_seq', 148, true);
+
+
+--
+-- Name: tefuni_assign tefuni_assign_pkey; Type: CONSTRAINT; Schema: public; Owner: tefuni
+--
+
+ALTER TABLE ONLY public.tefuni_assign
+    ADD CONSTRAINT tefuni_assign_pkey PRIMARY KEY (id);
 
 
 --
