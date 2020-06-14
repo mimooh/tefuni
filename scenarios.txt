@@ -1,0 +1,95 @@
+scenario1: exact copy  {{{
+
+ Week1	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:A	S:B									
+02 09.00	K:C	S:D									
+03 10.00											
+04 11.00	
+
+ Week2	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:A	S:B									
+02 09.00	K:C	S:D									
+03 10.00											
+04 11.00	
+
+ Week3	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:A	S:B									
+02 09.00	K:C	S:D									
+03 10.00											
+04 11.00	
+
+}}}
+scenario2: 2 rooms, 2 teachers, constant teacher:group, alternating weeks {{{
+
+ Week1	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:A	S:B									
+02 09.00	K:C	S:D									
+03 10.00											
+04 11.00	
+
+ Week2	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:X	S:Y										 
+02 09.00	K:Z										
+03 10.00											
+04 11.00	
+
+ Week3	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:A	S:B									
+02 09.00	K:C	S:D									
+03 10.00											
+04 11.00	
+
+ Week4	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
+01 08.00	K:X	S:Y										 
+02 09.00	K:Z										
+03 10.00											
+04 11.00	
+
+}}}
+scenario3: 4 rooms, 4 teachers, switching teacher:group, alternating weeks {{{
+
+ Week1		Monday	   
+----------+r1-------+r2-------+r3-------+r4-------
+01 08.00	K:A	S:B	M:X	T:D
+02 09.00	K:C	S:D	M:Z	
+03 10.00											
+04 11.00	
+
+ Week2		Monday	   
+----------+r1-------+r2-------+r3-------+r4-------
+01 08.00	M:A	T:B	K:X	S:D
+02 09.00	M:C	T:D	K:Z	
+03 10.00											
+04 11.00	
+
+ Week3		Monday	   
+----------+r1-------+r2-------+r3-------+r4-------
+01 08.00	K:A	S:B	M:X	T:D
+02 09.00	K:C	S:D	M:Z	
+03 10.00											
+04 11.00	
+
+ Week4		Monday	   
+----------+r1-------+r2-------+r3-------+r4-------
+01 08.00	M:A	T:B	K:X	S:D
+02 09.00	M:C	T:D	K:Z	
+03 10.00											
+04 11.00	
+
+
+}}}
+
+
+
+
+--------- r1, r2, r3, r4 are rooms
+--------- 'K:A' encodes 'teacher:group'
+
+vim:syntax=plan tabstop=10 shiftwidth=10 softtabstop=10 tw=0 nowrap
