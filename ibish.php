@@ -1,113 +1,20 @@
 <?php
 require_once("inc.php") ; 
+# echo "drop table tefuni_weeks; create table tefuni_weeks(meta text, weeks text)" | psql tefuni
+# echo "insert into tefuni_weeks(meta,weeks) values('2020.01', '[ \"31.08-06.09\", \"07.09-13.09\", \"14.09-20.09\", \"21.09-27.09\" ] '); select * from tefuni_weeks;" | psql tefuni
+# echo "select * from tefuni_groups;" | psql tefuni
+# echo "alter table tefuni_input alter column id type serial;" | psql tefuni
 
-function semester_weeks($semester) { #{{{
-	$dto = new DateTime();
-	$weeks=[];
-	if($semester=='winter') { $start=36; $tef_year=$_SESSION['tef_year']; } else { $start=5; $tef_year=$_SESSION['tef_year']+1; }
-	
+# echo "select * from tefuni_groups" | psql tefuni
+# echo "select * from tefuni_input" | psql tefuni
+# echo "select * from v_tefuni" | psql tefuni
+# echo "\d tefuni_input" | psql tefuni
+# echo "update tefuni_input set blocks='0,2,0,2' where mod(id,2)=1 and hours<10;" | psql tefuni
+# echo "create table tefuni_groups(gr text, struct text)" | psql tefuni
+$_SESSION['tefuni_year']=2020;
+$_SESSION['tefuni_week']='2020.01';
 
-	for($i=$start; $i<=$start+21; $i++) {
-		$dto->setISODate($tef_year, $i);
-		$w0=strftime("%d", $dto->getTimestamp());
-		$month0= strftime("%m", $dto->getTimestamp());
-		$dto->modify('+6 days');
-		$w1= strftime("%d", $dto->getTimestamp());
-		$month1= strftime("%m", $dto->getTimestamp());
-		$y=$dto->format('Y');
-		if($y>2020) { break; }
-		$weeks[$i]="$w0.$month0-$w1.$month1";
-	}
-	return $weeks;
-}
-/*}}}*/
-function grup_from_forma($dbrecord) {/*{{{*/
-	# W bazie mamy cw ; lab1 ; lab2 ; wyk
-	#				2 ; 0    ; 4    ; 1
-	# i takie dane musza przyjsc w $dbrecord, najlepiej z v_ramowy. 
-	# Funkcja zwroci liczbe grup dla zadanej formy
-
-	if(empty($dbrecord['forma'])) { $dbrecord['forma']='--'; }
-
-	$forma=$dbrecord['forma'];
-	if(in_array($forma, array("ćw", "ćw.proj"))) { $forma='cw'; }
-	if($forma=='tylko.egz') { 
-		$grup=1; 
-	} else if($forma=='lab') { 
-		$grup=$dbrecord['lab1'] + $dbrecord['lab2'];
-	} else if($forma=='--') { 
-		$grup=0; 
-	} else {
-		$grup=$dbrecord[$forma];
-	}
-	$grup+=0;
-	$dbrecord['cw']+=0;
-	$dbrecord['lab1']+=0;
-	$dbrecord['lab2']+=0;
-	$dbrecord['wyk']+=0;
-
-	$godzin_do_podzialu="<tr><td><fuksja>godzin do podziału</fuksja><td>";
-	if($forma=='lab') { 
-		$godzin_grup="<tr><td><td>godzin * grup * 1 prowadzący &nbsp; &nbsp; = ".$dbrecord['godzin']." * $dbrecord[lab1] * 1 + <br> 
-		godzin * grup * 2 prowadzących = ".$dbrecord['godzin']." * $dbrecord[lab2] * 2  ";
-		$suma_godzin="$godzin_do_podzialu<fuksja>".($dbrecord['godzin'] * $dbrecord['lab1'] * 1 + $dbrecord['godzin'] * $dbrecord['lab2'] * 2 )."</fuksja>";
-		$suma_godzin2=$dbrecord['godzin'] * $dbrecord['lab1'] * 1 + $dbrecord['godzin'] * $dbrecord['lab2'] * 2;
-	} else { 
-		$godzin_grup="<tr><td><td>godzin * grup = ".$dbrecord['godzin']." * $grup";
-		$suma_godzin="$godzin_do_podzialu<fuksja>".($grup * $dbrecord['godzin'])."</fuksja>";
-		$suma_godzin2=$grup * $dbrecord['godzin'];
-	}
-	return array('grup'=>$grup, 'godzin_grup'=>$godzin_grup, 'suma_godzin'=>$suma_godzin, 'suma_godzin2'=>$suma_godzin2);
-}
-
-	
-/*}}}*/
-
-function form_X_prowadzacych($rr) { /*{{{*/
-	# echo "select * from ramowy_prowadzacy where ramowy_id=6950" | psql cia
-	# echo "update ramowy_prowadzacy set tydzien='31-06.sie'" | psql cia
-	$prowadzacych_per_tydzien=8;
-
-	$ramowy_id=$rr['id'];
-	$collect=[];
-	$suma=0;
-	foreach(semester_weeks('winter') as $tydzien) {
-		$collect[$tydzien]=[];
-		$r=query("SELECT p.id,p.nazwisko,rp.godzin FROM pracownicy p, ramowy_prowadzacy rp WHERE p.id=rp.wykladowca_id AND ramowy_id=$1 AND rok=$2 AND tydzien=$3 AND p.id IN (SELECT wykladowca_id FROM ramowy_prowadzacy WHERE ramowy_id=$1 AND rok=$2)", array($ramowy_id, $_SESSION['tef_year'], $tydzien));
-		if(!empty($r)) { 
-			foreach($r as $k=>$z) {
-				#$collect[$tydzien][]=$_SESSION['nn']->wykladowca_droplist($z['id'], "prowadzacy[$tydzien][]")." <input style='width: 4px; margin: 0px; color: #dad;  background-color: #424' autocomplete=off type=text name=prowadzacy_godzin[$tydzien][] value=".$r[$k]['godzin'].">";
-				$suma+=$r[$k]['godzin'];
-			}
-		} 
-	}
-	foreach($collect as $tydzien=>$data) {
-		for($i=count($data); $i<$prowadzacych_per_tydzien; $i++) {
-			#$collect[$tydzien][]=$_SESSION['nn']->wykladowca_droplist('', "prowadzacy[$tydzien][]")." <input style='width: 16px; margin: 0px; color: #dad; background-color: #424' autocomplete=off size=3 type=text name=prowadzacy_godzin[$tydzien][] value=''>";
-		}
-	}
-	foreach($collect as $tydzien=>$data) {
-		#$tt=preg_replace("/-/", "<br>", $tydzien);
-		$collect[$tydzien]="<tr><td>$tydzien<td>".implode("<td>", $data);
-	}
-	return array(implode("", $collect), $suma);
-
-}
-/*}}}*/
-function listing_prowadzacych($ramowy_id) { /*{{{*/
-	$r=query("SELECT p.id,p.nazwisko,rp.godzin FROM pracownicy p, ramowy_prowadzacy rp WHERE p.id=rp.wykladowca_id AND ramowy_id=$1 AND rok=$2 AND p.id IN (SELECT wykladowca_id FROM ramowy_prowadzacy WHERE ramowy_id=$1 AND rok=$2)", array($ramowy_id, $_SESSION['tef_year']));
-	$collect=[];
-	foreach($r as $k=>$z) {
-		extract($z);
-		$collect[]="$nazwisko.$godzin";
-	}
-	if(isset($collect[0])) { $collect[0]="<przedmiot>$collect[0]</przedmiot>"; }
-	$c=implode(" + ", $collect);
-	return "<span class=prowadzacy> &nbsp; &nbsp;  $c</span>";
-
-}
-/*}}}*/
-function update_prowadzacy() {/*{{{*/
+function update() {/*{{{*/
 	# psql cia -c "SELECT * FROM v_prowadzacy where ramowy_id=4560";
 	# psql cia -c "SELECT * FROM ramowy where przedmiot_id=256";
 	if(empty($_POST['update'])) { return; }
@@ -123,7 +30,7 @@ function update_prowadzacy() {/*{{{*/
 			query("INSERT INTO ramowy_prowadzacy (wykladowca_id,ramowy_id,rok,godzin) values($1,$2,$3,$4)", array($i,$_GET['edit'], $_POST['rok'], $_POST['prowadzacy_godzin'][$k]));
 		}
 	}
-	header("Location: ibish2.php");
+	header("Location: ibish.php");
 }
 /*}}}*/
 
@@ -146,9 +53,10 @@ function count_per_forma($arr) {/*{{{*/
 }
 /*}}}*/
 function info_podgrupy($id) { /*{{{*/
-	# psql cia -c "select * from podgrupy where corka=1089 order by corka, lab ";
+	# psql cia -c "select * from podgrupy where corka=1089";
 	# psql cia -c "UPDATE podgrupy set wyk=1 WHERE corka=1089 AND id>853"
 	# psql cia -c "select * from formy";
+	# psql cia -c "select distinct corka from v_ramowy limit 5";
 
 	$r=query("SELECT * FROM podgrupy WHERE corka=$1 ORDER BY lab", array($id));
 	if(empty($r)) { 
@@ -193,10 +101,10 @@ function edit_form() {/*{{{*/
 	$cols="id,matka_id,matka,semestr,corka,corka_id,liczebnosc,przedmiot_full as przedmiot,przedmiot_id,godzin,forma,cw,wyk,lab1,lab2";
 	$r=query("SELECT $cols FROM v_ramowy WHERE id=$1 AND rok=$2", array($_GET['edit'], $_SESSION['tef_year'])); 
 	if(empty($r)) { die("<br><br><red>W programie ramowym nie ma pozycji $_GET[edit] na rok $_SESSION[tef_year]</red>"); }
-	$meta=grup_from_forma($r[0]);
-	$r[0]['grup']=$meta['grup'];
-	$r[0]['godzin_grup']=$meta['godzin_grup'];
-	$r[0]['suma_godzin']=$meta['suma_godzin'];
+	#$meta=grup_from_forma($r[0]);
+	$r[0]['grup']=111;
+	$r[0]['godzin_grup']=222;
+	$r[0]['suma_godzin']=333;
 	$v=$r[0];
 	$info_podgrupy=info_podgrupy($r[0]['corka_id']);
 	$v['corka']=grupa_kolor($v['corka']);
@@ -223,14 +131,21 @@ function edit_form() {/*{{{*/
 /*}}}*/
 
 function listing() {/*{{{*/
-	#{ 'students': [ [15,15], [16,14] ], 'teachers': [ [2,2], [2,1] ] }
-	# echo "drop table tefuni_input; create table tefuni_input as select id,corka as group,semestr as semester, forma as form,przedmiot as subject, godzin as hours,'' as blocks, liczebnosc as group_structure, przedmiot_full as subject_full from v_ramowy order by id; update tefuni_input set form='lec' where form='wyk'; update tefuni_input set form='exc' where form='ćw'; update tefuni_input set form='exc' where form='ćw.proj'; update tefuni_input set form='-' where form='tylko.egz'; select * from tefuni_input" | psql cia
+	# echo "drop table tefuni_input; create table tefuni_input as select id,corka as gr,semestr as semester, forma as form,przedmiot as subject, godzin as hours,'' as blocks, przedmiot_full as subjectf from v_ramowy where rok=2019 order by id; update tefuni_input set form='lec' where form='wyk'; update tefuni_input set form='exc' where form='ćw'; update tefuni_input set form='exc' where form='ćw.proj'; delete from tefuni_input where form is null or form='' or form='--' or form='tylko.egz'; update tefuni_input set blocks='2,2,2,2'; update tefuni_input set blocks='0,2,0,2' where mod(id,2)=1 and hours<10; update tefuni_input set blocks='2,0,2,0' where mod(id,2)=0 and hours<10; select * from tefuni_input order by id;" | psql cia
+	# pg_dump -d tefuni > db.sql
+	# echo "drop table tefuni_input cascade;" | psql tefuni
+	# psql -d tefuni -f t.sql
+	# echo "select * from v_tefuni" | psql tefuni
+	# echo "select * from tefuni_input order by id" | psql tefuni
+	# echo "ALTER TABLE public.tefuni_input OWNER TO tefuni;" | psql tefuni
+
 
 	if(!empty($_GET['edit'])) { return; }
 	$raport="<table>";
 	$raport.="<tr><th>form<th>semester<th>subject<th>group<th>hours";
 
 	foreach(query("SELECT * FROM tefuni_input where subject='Tec.inf' ORDER BY form,semester,subject,id") as $k=>$v) { 
+		dd($v);
 		#$gg=query("SELECT SUM(godzin) AS zaplanowal FROM ramowy_prowadzacy WHERE ramowy_id=$1 AND rok=$2", array($v['id'], $_SESSION['tef_year']));
 		#$z=grup_from_forma($v);
 		#if(empty($v['corka'])) { continue; }
@@ -238,7 +153,6 @@ function listing() {/*{{{*/
 		#$v['forma']=$_SESSION['nn']->forma_kolor($v['forma']);
 		#$v['przedmiot']="<a href=?edit=$v[id]>$v[przedmiot]</a>";
 		#$raport.="<tr><td> $v[forma] <td>$v[semestr]<td class=nowrap>$v[przedmiot]<td> $v[corka]  <td class=nowrap><godzin>".$gg[0]['zaplanowal']."</godzin> z <fuksja> $z[suma_godzin2] </fuksja>";
-		#$raport.="<td style='max-width:600px'>".listing_prowadzacych($v['id']);
 		#$raport.="<td>".$v['komentarz'];
 		#if ($z['suma_godzin2'] != $gg[0]['zaplanowal'])	{ $rozbieznosci.="<tr> <td>$v[forma]<td>$v[semestr]<td class=nowrap>$v[przedmiot] <td class=nowrap>$v[corka] <td class=nowrap><godzin>".$gg[0]['zaplanowal']."</godzin> z <fuksja>$z[suma_godzin2]</fuksja><td>".listing_prowadzacych($v['id'])."<td>$v[komentarz]"; }
 	}
@@ -254,11 +168,12 @@ function listing() {/*{{{*/
 /*}}}*/
 function main() {/*{{{*/
 	css();
-	update_prowadzacy();
+	update();
 	edit_form();
 	listing();
 }
 /*}}}*/
+
 
 main();
 ?> 

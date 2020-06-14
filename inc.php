@@ -2,7 +2,6 @@
 session_name('tefuni');
 session_start();
 
-$_SESSION['tef_year']=2020;
 if(empty($_SERVER['SERVER_NAME'])) { $_SESSION['console']=1; } else { $_SESSION['console']=0; }
 
 # debug/*{{{*/
