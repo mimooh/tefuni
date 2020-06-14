@@ -34,6 +34,7 @@ function css() { #{{{
 		<meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1'>
 		<link rel='stylesheet' href='css/css.css'>
 	</head>
+	<a target=blank_ style='float:right' class=blink href=https://github.com/mimooh/tefuni/>github</a>
 	";
 	if($_SESSION['console']==0) { echo "$header"; }
 }
