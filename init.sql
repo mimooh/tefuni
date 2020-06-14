@@ -16,6 +16,29 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+DROP DATABASE tefuni;
+--
+-- Name: tefuni; Type: DATABASE; Schema: -; Owner: tefuni
+--
+
+CREATE DATABASE tefuni WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'pl_PL.UTF-8' LC_CTYPE = 'pl_PL.UTF-8';
+
+
+ALTER DATABASE tefuni OWNER TO tefuni;
+
+\connect tefuni
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
@@ -1267,6 +1290,13 @@ COPY public.tefuni_input (id, gr, semester, form, subject, hours, blocks, subjec
 COPY public.tefuni_weeks (meta, weeks) FROM stdin;
 2020.01	[ "31.08-06.09", "07.09-13.09", "14.09-20.09", "21.09-27.09" ] 
 \.
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
