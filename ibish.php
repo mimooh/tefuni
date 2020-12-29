@@ -1,14 +1,17 @@
 <?php
 require_once("inc.php") ; 
-# echo "drop table tefuni_weeks; create table tefuni_weeks(meta text, weeks text)" | psql tefuni
-# echo "insert into tefuni_weeks(meta,weeks) values('2020.01', '[ \"31.08-06.09\", \"07.09-13.09\", \"14.09-20.09\", \"21.09-27.09\" ] '); select * from tefuni_weeks;" | psql tefuni
-# echo "select * from tefuni_groups;" | psql tefuni
-# echo "update tefuni_groups set struct='{' || struct || '}';" | psql tefuni
-# echo "alter table tefuni_input alter column id type serial;" | psql tefuni
 
 # echo "select * from tefuni_assign" | psql tefuni
+# echo "select * from tefuni_groups" | psql tefuni
 # echo "select * from tefuni_input" | psql tefuni
+# echo "select * from tefuni_weeks" | psql tefuni
 # echo "select * from v_tefuni" | psql tefuni
+# echo "select distinct(subject) from v_tefuni" | psql tefuni
+#
+# grup   ; form ; sub ; students ; teachers
+# ND-BW4 ; lab  ; 1   ; 12       ; 2
+# ND-BW4 ; lab  ; 2   ; 13       ; 2
+#
 $_SESSION['tefuni_week']='2020.01';
 if(empty($_SESSION['select_subject'])) { $_SESSION['select_subject']=''; }
 if($_SESSION['console']==1) { 
@@ -18,11 +21,11 @@ if($_SESSION['console']==1) {
 
 function subjects_droplist() { #{{{
 	if($_SESSION['console']==1) { return; }
-	$r=query("select distinct subject,subjectf from v_tefuni order by subjectf");
+	$r=query("select distinct subject,subject_full from v_tefuni order by subject_full");
 	echo "<form method=post> <select name=select_subject onchange='this.form.submit()'>";
 	echo "<option value='$_SESSION[select_subject]'>$_SESSION[select_subject]</option>";
 	foreach($r as $k=>$v) {
-		echo "<option value='$v[subjectf]'>$v[subjectf]</option>";
+		echo "<option value='$v[subject_full]'>$v[subject_full]</option>";
 	}
 	echo "</select></form><br><br>";
 
@@ -89,6 +92,13 @@ function count_per_forma($arr) {/*{{{*/
 }
 /*}}}*/
 function weeks_struct($v) { #{{{
+	# echo "\d" | psql tefuni
+	# echo "select * from v_tefuni" | psql tefuni
+	# echo "select * from tefuni_weeks" | psql tefuni
+	# echo "select * from tefuni_assign" | psql tefuni
+	# echo "select * from tefuni_input" | psql tefuni
+	# echo "select * from tefuni_groups" | psql tefuni
+
 	$r=query("select weeks from tefuni_weeks where meta=$1", array($_SESSION['tefuni_week']));
 	$weeks=json_decode($r[0]['weeks']);
 	$blocks=explode(",", $v['blocks']);
@@ -96,10 +106,11 @@ function weeks_struct($v) { #{{{
 	foreach($weeks as $k=>$x) {
 		$w[$x]=$blocks[$k];
 	}
+	dd($w);
 	return $w;
 }
 /*}}}*/
-function structs($v) { /*{{{*/
+function read_structs($v) { /*{{{*/
 	$z=json_decode($v['struct'],1);
 	$tt=[];
 	if($v['form']=='lab') {
@@ -127,13 +138,13 @@ function edit() {/*{{{*/
 	if(!isset($_GET['edit'])) { return; }
 	echo "<a class=blink href=ibish.php>Back</a><br><br>";
 	$r=query("SELECT * FROM v_tefuni WHERE id=$1", array($_GET['edit'])); 
-	$structs=structs($r[0]);
+	$structs=read_structs($r[0]);
 	echo "<form method=post action=?edit=$_GET[edit]>";
 	echo "<input type=hidden name=update value=1>";
 	echo "<input type=hidden name=tefuni_id value=$_GET[edit]>";
-	echo "<br><grupa>$structs[gr]</grupa> $structs[subjectf] ".color_form($structs['form']);
+	echo "<br><grupa>$structs[gr]</grupa> $structs[subject_full] ".color_form($structs['form']);
 	echo "<br><br><input autocomplete=off type=submit value=Save>";
-	echo "<table class=nowrap><tr><th>week<th>teacher1<th>teacher2 <th>teacher3<th>teacher4 <th>teacher5<th>teacher7 <th>teacher7<th>teacher8";
+	echo "<table class=nowrap><tr><th>week<th>teacher1<th>teacher2 <th>teacher3<th>teacher4 <th>teacher5<th>teacher6 <th>teacher7<th>teacher8";
 	foreach($structs['weeks'] as $k=>$v) {
 		teachers_droplist($k, $_GET['edit']);
 	}
@@ -160,7 +171,7 @@ function listing() {/*{{{*/
 	$raport="";
 	$raport.="<tr><th>form<th>semester<th>subject<th>group";
 
-	foreach(query("SELECT id,form,semester,subject,gr FROM v_tefuni where subjectf=$1 ORDER BY form,semester,subject,id", array($_SESSION['select_subject'])) as $k=>$v) { 
+	foreach(query("SELECT id,form,semester,subject,gr FROM v_tefuni where subject_full=$1 ORDER BY form,semester,subject,id", array($_SESSION['select_subject'])) as $k=>$v) { 
 		$v['form']=color_form($v['form']);
 		$v['subject']="<a href=?edit=$v[id]>$v[subject]</a>";
 		unset($v['id']);

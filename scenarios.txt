@@ -1,20 +1,24 @@
-scenario1: exact copy  {{{
+Configuration from teacher's perspective. The description at the bottom.
+K:A encodes teacher:group, r1, r2, r3, r4 are rooms
 
- Week1	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+scenario1: easiest: the same group-week week.m1 {{{
+
+4 blocks
+ Week1.m1     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:A	S:B									
 02 09.00	K:C	S:D									
 03 10.00											
 04 11.00	
 
- Week2	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+ Week2.m1     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:A	S:B									
 02 09.00	K:C	S:D									
 03 10.00											
 04 11.00	
 
- Week3	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+ Week3.m1     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:A	S:B									
 02 09.00	K:C	S:D									
@@ -22,30 +26,30 @@ scenario1: exact copy  {{{
 04 11.00	
 
 }}}
-scenario2: 2 rooms, 2 teachers, constant teacher:group, alternating weeks {{{
+scenario2: changing group-weeks: week.m1 and week.m2 {{{
 
- Week1	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+ Week1.m1     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:A	S:B									
 02 09.00	K:C	S:D									
 03 10.00											
 04 11.00	
 
- Week2	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+ Week2.m2     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:X	S:Y										 
 02 09.00	K:Z										
 03 10.00											
 04 11.00	
 
- Week3	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+ Week3.m1     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:A	S:B									
 02 09.00	K:C	S:D									
 03 10.00											
 04 11.00	
 
- Week4	    Monday	   Tuesday            Wednesday	    Thursday	     Friday
+ Week4.m2     Monday	   Tuesday            Wednesday	    Thursday	     Friday
 ----------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------+r1-------+r2-------
 01 08.00	K:X	S:Y										 
 02 09.00	K:Z										
@@ -53,30 +57,30 @@ scenario2: 2 rooms, 2 teachers, constant teacher:group, alternating weeks {{{
 04 11.00	
 
 }}}
-scenario3: 4 rooms, 4 teachers, switching teacher:group, alternating weeks {{{
+scenario3: same group-week, but teachers changing {{{
 
- Week1		Monday	   
+ Week1.m1		Monday	   
 ----------+r1-------+r2-------+r3-------+r4-------
 01 08.00	K:A	S:B	M:X	T:D
 02 09.00	K:C	S:D	M:Z	
 03 10.00											
 04 11.00	
 
- Week2		Monday	   
+ Week2.m1		Monday	   
 ----------+r1-------+r2-------+r3-------+r4-------
 01 08.00	M:A	T:B	K:X	S:D
 02 09.00	M:C	T:D	K:Z	
 03 10.00											
 04 11.00	
 
- Week3		Monday	   
+ Week3.m1		Monday	   
 ----------+r1-------+r2-------+r3-------+r4-------
 01 08.00	K:A	S:B	M:X	T:D
 02 09.00	K:C	S:D	M:Z	
 03 10.00											
 04 11.00	
 
- Week4		Monday	   
+ Week4.m1		Monday	   
 ----------+r1-------+r2-------+r3-------+r4-------
 01 08.00	M:A	T:B	K:X	S:D
 02 09.00	M:C	T:D	K:Z	
@@ -86,10 +90,27 @@ scenario3: 4 rooms, 4 teachers, switching teacher:group, alternating weeks {{{
 
 }}}
 
+Concepts:{{{
 
+* we copy meta-weeks across the calendar
 
+* meta-week has a constant this-group-in-this-room
 
---------- r1, r2, r3, r4 are rooms
---------- 'K:A' encodes 'teacher:group'
+TODO: * meta-week has a constant this-group-in-this-room-with-this-teacher
+
+* {"labs":[[15,15],[16,9]],"teachers":[[2,2],[2,1]]}
+means there are 2 teachers needed for the groups of 15, 15, 16 students and 1 teacher for the group of 9 students
+
+* maths.exc means "maths exercies"
+
+* TODO: each exercise lasts n hours - this defines a block
+
+* blocks 2,0,2,1 for subject maths means
+week1: 2 groups
+week2: 0 groups
+week3: 2 groups
+week4: 1 groups
+
+}}}
 
 vim:syntax=plan tabstop=10 shiftwidth=10 softtabstop=10 tw=0 nowrap

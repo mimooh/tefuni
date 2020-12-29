@@ -5,6 +5,7 @@
 -- Dumped from database version 10.12 (Ubuntu 10.12-0ubuntu0.18.04.1)
 -- Dumped by pg_dump version 10.12 (Ubuntu 10.12-0ubuntu0.18.04.1)
 
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -23,6 +24,8 @@ DROP DATABASE tefuni;
 
 CREATE DATABASE tefuni WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'pl_PL.UTF-8' LC_CTYPE = 'pl_PL.UTF-8';
 
+DROP ROLE IF EXISTS tefuni;
+CREATE ROLE tefuni LOGIN;
 
 ALTER DATABASE tefuni OWNER TO tefuni;
 
@@ -100,7 +103,10 @@ ALTER SEQUENCE public.tefuni_assign_id_seq OWNED BY public.tefuni_assign.id;
 
 CREATE TABLE public.tefuni_groups (
     gr text,
-    struct text
+    form text,
+	sub text,
+	students int,
+	teachers int
 );
 
 
@@ -118,7 +124,7 @@ CREATE TABLE public.tefuni_input (
     subject character varying(50),
     hours integer,
     blocks text,
-    subjectf character varying(200)
+    subject_full character varying(200)
 );
 
 
@@ -152,21 +158,23 @@ ALTER TABLE public.tefuni_weeks OWNER TO tefuni;
 -- Name: v_tefuni; Type: VIEW; Schema: public; Owner: tefuni
 --
 
-CREATE VIEW public.v_tefuni AS
- SELECT i.id,
-    i.gr,
-    i.semester,
-    i.form,
-    i.subject,
-    i.hours,
-    i.blocks,
-    i.subjectf,
-    g.struct
-   FROM (public.tefuni_input i
-     LEFT JOIN public.tefuni_groups g ON (((i.gr)::text = g.gr)));
-
-
-ALTER TABLE public.v_tefuni OWNER TO tefuni;
+-- CREATE VIEW public.v_tefuni AS
+--  SELECT i.id,
+--     i.gr,
+--     i.semester,
+--     i.form,
+--     i.subject,
+--     i.subject || '.' || i.form as subj_form,
+--     i.hours,
+--     i.blocks,
+--     i.subject_full
+--    FROM tefuni_input i;
+-- 
+-- 
+-- -- g.struct
+-- -- LEFT JOIN public.tefuni_groups g ON (((i.gr)::text = g.gr)));
+-- 
+-- ALTER TABLE public.v_tefuni OWNER TO tefuni;
 
 --
 -- Name: v_tefuni_assign; Type: VIEW; Schema: public; Owner: tefuni
@@ -211,67 +219,466 @@ COPY public.tefuni_assign (id, tefuni_id, teacher_id, week, hours) FROM stdin;
 -- Data for Name: tefuni_groups; Type: TABLE DATA; Schema: public; Owner: tefuni
 --
 
-COPY public.tefuni_groups (gr, struct) FROM stdin;
-Erasmus	{"labs":[[10]],"teachers":[[1]]}
-Inne	{"labs":[[16,15]],"teachers":[[2,2]]}
-ND-BW4	{"labs":[[13]],"teachers":[[2]]}
-ND-BW5	{"labs":[[15,15],[16,16]],"teachers":[[2,2],[2,2]]}
-ND-BW6	{"labs":[[20]],"teachers":[[2]]}
-ND-P34	{"labs":[[15,14],[15,14],[15,15],[13,13],[14,13],[13,13]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
-ND-P35	{"labs":[[15,16],[16,15],[13,13],[16,15],[12,12],[16,16]],"teachers":[[2,2],[2,2],[2,2],[2,2],[1,1],[2,2]]}
-ND-P36	{"labs":[[15,14],[14,14],[15,14],[15,15],[8,13],[14,13]],"teachers":[[2,2],[2,2],[2,2],[2,2],[1,2],[2,2]]}
-ND-P37	{"labs":[[15,15],[15,15],[15,15],[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
-NP-C15	{"labs":[[13]],"teachers":[[2]]}
-NP-C16	{"labs":[[19]],"teachers":[[2]]}
-NP-CBW6	{"labs":[[16]],"teachers":[[2]]}
-NP-CBW7	{"labs":[[8]],"teachers":[[1]]}
-NP-CBW8	{"labs":[[20]],"teachers":[[2]]}
-NP-PC18	{"labs":[[18],[18]],"teachers":[[2],[2]]}
-NP-PC19	{"labs":[[13],[13,13]],"teachers":[[2],[2,2]]}
-NP-PC20	{"labs":[[15,15]],"teachers":[[2,2]]}
-NP-PC21	{"labs":[[18]],"teachers":[[2]]}
-NP-PC22	{"labs":[[12,13]],"teachers":[[1,2]]}
-NP-PC23	{"labs":[[12,12],[12,12]],"teachers":[[1,1],[1,1]]}
-NP-PS43	{"labs":[[17,16],[18,16],[14,17],[17,15],[18,17],[15,14]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
-NP-PS44	{"labs":[[19,16],[16,17],[19,15],[17,16],[18,14],[13,14]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,2],[2,2]]}
-NP-PS45	{"labs":[[14,15],[15,16],[16,16],[15,15],[13,12],[15,15]],"teachers":[[2,2],[2,2],[2,2],[2,2],[2,1],[2,2]]}
-NP-PS46	{"labs":[[13,13],[15,16],[12,12],[14,14],[14,13],[17,17],[17,16]],"teachers":[[2,2],[2,2],[1,1],[2,2],[2,2],[2,2],[2,2]]}
-NP-PS47A	{"labs":[[15,15],[14,13],[15,14],[16,15]],"teachers":[[2,2],[2,2],[2,2],[2,2]]}
-NP-PS47B	{"labs":[[15,15],[14,14],[14,17]],"teachers":[[2,2],[2,2],[2,2]]}
-NP-PS48A	{"labs":[[15,15],[14,13],[15,14],[16,15]],"teachers":[[2,2],[2,2],[2,2],[2,2]]}
-NP-PS48B	{"labs":[[15,15],[14,14],[14,17]],"teachers":[[2,2],[2,2],[2,2]]}
-SD-BW3	{"labs":[[16,18]],"teachers":[[2,2]]}
-SD-BW4	{"labs":[[11]],"teachers":[[1]]}
-SD-BW5	{"labs":[[18]],"teachers":[[2]]}
-SD-BW6	{"labs":[[30]],"teachers":[[2]]}
-SD-P12	{"labs":[[13,22]],"teachers":[[2,2]]}
-SD-P13	{"labs":[[14,12]],"teachers":[[2,1]]}
-SD-P14	{"labs":[[12,12],[10,9]],"teachers":[[1,1],[1,1]]}
-SD-P15	{"labs":[[13,12],[11,12]],"teachers":[[2,1],[1,1]]}
-SP-C17.IBC	{"labs":[[26]],"teachers":[[2]]}
-SP-C18.IBC	{"labs":[[10,10]],"teachers":[[1,1]]}
-SP-C18.IBPr	{"labs":[[13,12]],"teachers":[[2,1]]}
-SP-C19	{"labs":[[9,9]],"teachers":[[1,1]]}
-SP-CBW4.OL	{"labs":[[20]],"teachers":[[2]]}
-SP-CBW4.ZB	{"labs":[[15]],"teachers":[[2]]}
-SP-CBW5	{"labs":[[35]],"teachers":[[2]]}
-SP-CBW5.OL	{"labs":[[17,18]],"teachers":[[2,2]]}
-SP-CBW6	{"labs":[[28]],"teachers":[[2]]}
-SP-CBW6.ZB	{"labs":[[15,15],[16,16]],"teachers":[[2,2],[2,2]]}
-SP-CBW7	{"labs":[[23]],"teachers":[[2]]}
-SP-CBW8	{"labs":[[15,15]],"teachers":[[2,2]]}
-SP-PC15	{"labs":[[16,15],[15,17]],"teachers":[[2,2],[2,2]]}
-SP-PC16	{"labs":[[17,16]],"teachers":[[2,2]]}
-SP-PC17	{"labs":[[15],[15]],"teachers":[[2],[2]]}
-SP-PC18	{"labs":[[11,10],[16]],"teachers":[[1,1],[2]]}
-SP-PC19	{"labs":[[14],[11,9],[10,9]],"teachers":[[2],[1,1],[1,1]]}
-SP-PC20	{"labs":[[12,12],[12,12],[12,12]],"teachers":[[1,1],[1,1],[1,1]]}
-SP-PK15	{"labs":[[14,15],[14,14],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
-SP-PK16	{"labs":[[15,15],[15,14],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
-SP-PK17	{"labs":[[13,12],[13,14],[13,16]],"teachers":[[2,1],[2,2],[2,2]]}
-SP-PK18	{"labs":[[14,14],[16,16],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
-SP-PK19	{"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
-SP-PK20	{"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
+COPY public.tefuni_groups (form,gr,sub,students,teachers) FROM stdin;
+exc	Erasmus.2018	01	30	1
+exc	Erasmus.2020	01	30	1
+exc	Inne	01	30	1
+exc	ND-BW4	01	30	1
+exc	ND-BW6	01	30	1
+exc	ND-BW6	02	30	1
+exc	ND-P34	01	30	1
+exc	ND-P34	02	30	1
+exc	ND-P34	03	30	1
+exc	ND-P34	04	30	1
+exc	ND-P34	05	30	1
+exc	ND-P34	06	30	1
+exc	ND-P35	01	30	1
+exc	ND-P35	02	30	1
+exc	ND-P35	03	30	1
+exc	ND-P35	04	30	1
+exc	ND-P35	05	30	1
+exc	ND-P35	06	30	1
+exc	ND-P36	01	30	1
+exc	ND-P36	02	30	1
+exc	ND-P36	03	30	1
+exc	ND-P36	04	30	1
+exc	ND-P36	05	30	1
+exc	ND-P36	06	30	1
+exc	ND-P37	01	30	1
+exc	ND-P37	02	30	1
+exc	ND-P37	03	30	1
+exc	ND-P37	04	30	1
+exc	ND-P37	05	30	1
+exc	ND-P37	06	30	1
+exc	NP-C15	01	30	1
+exc	NP-C16	01	30	1
+exc	NP-CBW6	01	30	1
+exc	NP-CBW7	01	30	1
+exc	NP-CBW8	01	30	1
+exc	NP-CBW8	02	30	1
+exc	NP-PC18	01	30	1
+exc	NP-PC18	02	30	1
+exc	NP-PC19	01	30	1
+exc	NP-PC19	02	30	1
+exc	NP-PC20	01	30	1
+exc	NP-PC21	01	30	1
+exc	NP-PC22	01	30	1
+exc	NP-PC22.BHP	01	30	1
+exc	NP-PC22.IBC	01	30	1
+exc	NP-PC22.IBP	01	30	1
+exc	NP-PC23	01	30	1
+exc	NP-PC23	02	30	1
+exc	NP-PS43	01	30	1
+exc	NP-PS43	02	30	1
+exc	NP-PS43	03	30	1
+exc	NP-PS43	04	30	1
+exc	NP-PS43	05	30	1
+exc	NP-PS43	06	30	1
+exc	NP-PS44	01	30	1
+exc	NP-PS44	02	30	1
+exc	NP-PS44	03	30	1
+exc	NP-PS44	04	30	1
+exc	NP-PS44	05	30	1
+exc	NP-PS44	06	30	1
+exc	NP-PS45	01	30	1
+exc	NP-PS45	02	30	1
+exc	NP-PS45	03	30	1
+exc	NP-PS45	04	30	1
+exc	NP-PS45	05	30	1
+exc	NP-PS45	06	30	1
+exc	NP-PS46	01	30	1
+exc	NP-PS46	02	30	1
+exc	NP-PS46	03	30	1
+exc	NP-PS46	04	30	1
+exc	NP-PS46	05	30	1
+exc	NP-PS46	06	30	1
+exc	NP-PS46	07	30	1
+exc	NP-PS47A	01	30	1
+exc	NP-PS47A	02	30	1
+exc	NP-PS47A	03	30	1
+exc	NP-PS47A	04	30	1
+exc	NP-PS47B	01	30	1
+exc	NP-PS47B	02	30	1
+exc	NP-PS47B	03	30	1
+exc	NP-PS48A	01	30	1
+exc	NP-PS48A	02	30	1
+exc	NP-PS48A	03	30	1
+exc	NP-PS48A	04	30	1
+exc	NP-PS48B	01	30	1
+exc	NP-PS48B	02	30	1
+exc	NP-PS48B	03	30	1
+exc	SD-BW3	01	30	1
+exc	SD-BW4	01	30	1
+exc	SD-BW5	01	30	1
+exc	SD-BW5.ZSB	01	30	1
+exc	SD-BW6	01	30	1
+exc	SD-P12	01	30	1
+exc	SD-P13	01	30	1
+exc	SD-P14	01	30	1
+exc	SD-P14	02	30	1
+exc	SD-P15	01	30	1
+exc	SP-C17.IBC	01	30	1
+exc	SP-C18.IBC	01	30	1
+exc	SP-C18.IBPr	01	30	1
+exc	SP-C19	01	30	1
+exc	SP-CBW4.OL	01	30	1
+exc	SP-CBW4.ZB	01	30	1
+exc	SP-CBW5	01	30	1
+exc	SP-CBW5.OL	01	30	1
+exc	SP-CBW6	01	30	1
+exc	SP-CBW6.ZB	01	30	1
+exc	SP-CBW7	01	30	1
+exc	SP-CBW8	01	30	1
+exc	SP-PC15	01	30	1
+exc	SP-PC15	02	30	1
+exc	SP-PC16	01	30	1
+exc	SP-PC17	01	30	1
+exc	SP-PC18	01	30	1
+exc	SP-PC18	02	30	1
+exc	SP-PC19	01	30	1
+exc	SP-PC19	02	30	1
+exc	SP-PC19.BHP	01	30	1
+exc	SP-PC19.IBC	01	30	1
+exc	SP-PC19.IBP	01	30	1
+exc	SP-PC20	01	30	1
+exc	SP-PC20	02	30	1
+exc	SP-PK15	01	30	1
+exc	SP-PK15	02	30	1
+exc	SP-PK15	03	30	1
+exc	SP-PK16	01	30	1
+exc	SP-PK16	02	30	1
+exc	SP-PK16	03	30	1
+exc	SP-PK17	01	30	1
+exc	SP-PK17	02	30	1
+exc	SP-PK17	03	30	1
+exc	SP-PK18	01	30	1
+exc	SP-PK18	02	30	1
+exc	SP-PK19	01	30	1
+exc	SP-PK19	02	30	1
+exc	SP-PK19	03	30	1
+exc	SP-PK20	01	30	1
+exc	SP-PK20	02	30	1
+exc	SP-PK20	03	30	1
+lab	Erasmus.2018	01	10	2
+lab	Erasmus.2020	01	10	2
+lab	Inne	01	16	2
+lab	Inne	02	15	2
+lab	ND-BW4	01	13	2
+lab	ND-BW6	01	15	2
+lab	ND-BW6	02	15	2
+lab	ND-BW6	03	16	2
+lab	ND-BW6	04	16	2
+lab	ND-P34	01	15	2
+lab	ND-P34	02	14	2
+lab	ND-P34	03	15	2
+lab	ND-P34	04	14	2
+lab	ND-P34	05	15	2
+lab	ND-P34	06	15	2
+lab	ND-P34	07	13	2
+lab	ND-P34	08	13	2
+lab	ND-P34	09	14	2
+lab	ND-P34	10	13	2
+lab	ND-P34	11	13	2
+lab	ND-P34	12	13	2
+lab	ND-P35	01	16	2
+lab	ND-P35	02	15	2
+lab	ND-P35	03	13	2
+lab	ND-P35	04	13	2
+lab	ND-P35	05	16	2
+lab	ND-P35	06	15	2
+lab	ND-P35	07	12	2
+lab	ND-P35	08	12	2
+lab	ND-P35	09	16	2
+lab	ND-P35	10	16	2
+lab	ND-P35	11	16	2
+lab	ND-P35	12	15	2
+lab	ND-P36	01	14	2
+lab	ND-P36	02	15	2
+lab	ND-P36	03	14	2
+lab	ND-P36	04	14	2
+lab	ND-P36	05	14	2
+lab	ND-P36	06	15	2
+lab	ND-P36	07	15	2
+lab	ND-P36	08	15	2
+lab	ND-P36	09	11	2
+lab	ND-P36	10	12	2
+lab	ND-P36	11	13	2
+lab	ND-P36	12	13	2
+lab	ND-P37	01	15	2
+lab	ND-P37	02	15	2
+lab	ND-P37	03	14	2
+lab	ND-P37	04	15	2
+lab	ND-P37	05	15	2
+lab	ND-P37	06	15	2
+lab	ND-P37	07	14	2
+lab	ND-P37	08	15	2
+lab	ND-P37	09	12	2
+lab	ND-P37	10	17	2
+lab	ND-P37	11	12	2
+lab	ND-P37	12	14	2
+lab	NP-C15	01	13	2
+lab	NP-C16	01	19	2
+lab	NP-CBW6	01	17	2
+lab	NP-CBW7	01	8	2
+lab	NP-CBW8	01	15	2
+lab	NP-CBW8	02	15	2
+lab	NP-CBW8	03	16	2
+lab	NP-CBW8	04	16	2
+lab	NP-PC18	01	18	2
+lab	NP-PC18	02	18	2
+lab	NP-PC19	01	13	2
+lab	NP-PC19	02	13	2
+lab	NP-PC19	03	13	2
+lab	NP-PC20	01	15	2
+lab	NP-PC20	02	16	2
+lab	NP-PC21	01	10	2
+lab	NP-PC21	02	10	2
+lab	NP-PC22	01	11	2
+lab	NP-PC22	02	10	2
+lab	NP-PC22.BHP	01	6	2
+lab	NP-PC22.IBC	01	7	2
+lab	NP-PC22.IBP	01	12	2
+lab	NP-PC23	01	15	2
+lab	NP-PC23	02	14	2
+lab	NP-PC23	03	12	2
+lab	NP-PC23	04	12	2
+lab	NP-PS43	01	17	2
+lab	NP-PS43	02	16	2
+lab	NP-PS43	03	18	2
+lab	NP-PS43	04	16	2
+lab	NP-PS43	05	14	2
+lab	NP-PS43	06	17	2
+lab	NP-PS43	07	17	2
+lab	NP-PS43	08	15	2
+lab	NP-PS43	09	18	2
+lab	NP-PS43	10	17	2
+lab	NP-PS43	11	15	2
+lab	NP-PS43	12	14	2
+lab	NP-PS44	01	19	2
+lab	NP-PS44	02	16	2
+lab	NP-PS44	03	16	2
+lab	NP-PS44	04	17	2
+lab	NP-PS44	05	19	2
+lab	NP-PS44	06	15	2
+lab	NP-PS44	07	17	2
+lab	NP-PS44	08	16	2
+lab	NP-PS44	09	18	2
+lab	NP-PS44	10	14	2
+lab	NP-PS44	11	13	2
+lab	NP-PS44	12	14	2
+lab	NP-PS45	01	14	2
+lab	NP-PS45	02	15	2
+lab	NP-PS45	03	15	2
+lab	NP-PS45	04	16	2
+lab	NP-PS45	05	16	2
+lab	NP-PS45	06	16	2
+lab	NP-PS45	07	15	2
+lab	NP-PS45	08	15	2
+lab	NP-PS45	09	13	2
+lab	NP-PS45	10	12	2
+lab	NP-PS45	11	15	2
+lab	NP-PS45	12	15	2
+lab	NP-PS46	01	13	2
+lab	NP-PS46	02	13	2
+lab	NP-PS46	03	15	2
+lab	NP-PS46	04	16	2
+lab	NP-PS46	05	12	2
+lab	NP-PS46	06	12	2
+lab	NP-PS46	07	14	2
+lab	NP-PS46	08	13	2
+lab	NP-PS46	09	15	2
+lab	NP-PS46	10	15	2
+lab	NP-PS46	11	17	2
+lab	NP-PS46	12	17	2
+lab	NP-PS46	13	17	2
+lab	NP-PS46	14	16	2
+lab	NP-PS47A	01	15	2
+lab	NP-PS47A	02	14	2
+lab	NP-PS47A	03	14	2
+lab	NP-PS47A	04	15	2
+lab	NP-PS47A	05	14	2
+lab	NP-PS47A	06	14	2
+lab	NP-PS47A	07	16	2
+lab	NP-PS47A	08	15	2
+lab	NP-PS47B	01	15	2
+lab	NP-PS47B	02	15	2
+lab	NP-PS47B	03	14	2
+lab	NP-PS47B	04	14	2
+lab	NP-PS47B	05	14	2
+lab	NP-PS47B	06	17	2
+lab	NP-PS48A	01	16	2
+lab	NP-PS48A	02	15	2
+lab	NP-PS48A	03	14	2
+lab	NP-PS48A	04	14	2
+lab	NP-PS48A	05	16	2
+lab	NP-PS48A	06	15	2
+lab	NP-PS48A	07	16	2
+lab	NP-PS48A	08	15	2
+lab	NP-PS48B	01	16	2
+lab	NP-PS48B	02	15	2
+lab	NP-PS48B	03	16	2
+lab	NP-PS48B	04	16	2
+lab	NP-PS48B	05	15	2
+lab	NP-PS48B	06	15	2
+lab	SD-BW3	01	16	2
+lab	SD-BW3	02	18	2
+lab	SD-BW4	01	9	2
+lab	SD-BW5	01	18	2
+lab	SD-BW5.ZSB	01	18	2
+lab	SD-BW6	01	27	2
+lab	SD-P12	01	13	2
+lab	SD-P12	02	22	2
+lab	SD-P13	01	14	2
+lab	SD-P13	02	12	2
+lab	SD-P14	01	10	2
+lab	SD-P14	02	10	2
+lab	SD-P14	03	9	2
+lab	SD-P14	04	9	2
+lab	SD-P15	01	12	2
+lab	SD-P15	02	17	2
+lab	SP-C17.IBC	01	26	2
+lab	SP-C18.IBC	01	11	2
+lab	SP-C18.IBC	02	10	2
+lab	SP-C18.IBPr	01	12	2
+lab	SP-C18.IBPr	02	12	2
+lab	SP-C19	01	16	2
+lab	SP-CBW4.OL	01	20	2
+lab	SP-CBW4.ZB	01	15	2
+lab	SP-CBW5	01	35	2
+lab	SP-CBW5.OL	01	17	2
+lab	SP-CBW5.OL	02	18	2
+lab	SP-CBW6	01	24	2
+lab	SP-CBW6.ZB	01	24	2
+lab	SP-CBW7	01	25	2
+lab	SP-CBW8	01	18	2
+lab	SP-CBW8	02	18	2
+lab	SP-PC15	01	16	2
+lab	SP-PC15	02	15	2
+lab	SP-PC15	03	15	2
+lab	SP-PC15	04	17	2
+lab	SP-PC16	01	17	2
+lab	SP-PC16	02	16	2
+lab	SP-PC17	01	15	2
+lab	SP-PC17	02	16	2
+lab	SP-PC18	01	8	2
+lab	SP-PC18	02	8	2
+lab	SP-PC18	03	7	2
+lab	SP-PC18	04	9	2
+lab	SP-PC19	01	9	2
+lab	SP-PC19	02	10	2
+lab	SP-PC19	03	9	2
+lab	SP-PC19	04	12	2
+lab	SP-PC19.BHP	01	15	2
+lab	SP-PC19.IBC	01	15	2
+lab	SP-PC19.IBP	01	10	2
+lab	SP-PC19.IBP	02	10	2
+lab	SP-PC20	01	17	2
+lab	SP-PC20	02	16	2
+lab	SP-PC20	03	16	2
+lab	SP-PC20	04	15	2
+lab	SP-PK15	01	14	2
+lab	SP-PK15	02	15	2
+lab	SP-PK15	03	14	2
+lab	SP-PK15	04	14	2
+lab	SP-PK15	05	15	2
+lab	SP-PK15	06	15	2
+lab	SP-PK16	01	15	2
+lab	SP-PK16	02	15	2
+lab	SP-PK16	03	15	2
+lab	SP-PK16	04	14	2
+lab	SP-PK16	05	15	2
+lab	SP-PK16	06	15	2
+lab	SP-PK17	01	13	2
+lab	SP-PK17	02	12	2
+lab	SP-PK17	03	13	2
+lab	SP-PK17	04	14	2
+lab	SP-PK17	05	14	2
+lab	SP-PK17	06	15	2
+lab	SP-PK18	01	14	2
+lab	SP-PK18	02	14	2
+lab	SP-PK18	03	16	2
+lab	SP-PK18	04	16	2
+lab	SP-PK18	05	15	2
+lab	SP-PK18	06	15	2
+lab	SP-PK19	01	15	2
+lab	SP-PK19	02	15	2
+lab	SP-PK19	03	13	2
+lab	SP-PK19	04	17	2
+lab	SP-PK19	05	13	2
+lab	SP-PK19	06	16	2
+lab	SP-PK20	01	18	2
+lab	SP-PK20	02	16	2
+lab	SP-PK20	03	17	2
+lab	SP-PK20	04	17	2
+lab	SP-PK20	05	16	2
+lab	SP-PK20	06	16	2
+lec	Erasmus.2018	01	100	1
+lec	Erasmus.2020	01	100	1
+lec	Inne	01	100	1
+lec	ND-BW4	01	100	1
+lec	ND-BW6	01	100	1
+lec	ND-P34	01	100	1
+lec	ND-P35	01	100	1
+lec	ND-P36	01	100	1
+lec	ND-P37	01	100	1
+lec	NP-C15	01	100	1
+lec	NP-C16	01	100	1
+lec	NP-CBW6	01	100	1
+lec	NP-CBW7	01	100	1
+lec	NP-CBW8	01	100	1
+lec	NP-PC18	01	100	1
+lec	NP-PC19	01	100	1
+lec	NP-PC20	01	100	1
+lec	NP-PC21	01	100	1
+lec	NP-PC22	01	100	1
+lec	NP-PC22.BHP	01	100	1
+lec	NP-PC22.IBC	01	100	1
+lec	NP-PC22.IBP	01	100	1
+lec	NP-PC23	01	100	1
+lec	NP-PS43	01	100	1
+lec	NP-PS44	01	100	1
+lec	NP-PS45	01	100	1
+lec	NP-PS46	01	100	1
+lec	NP-PS47A	01	100	1
+lec	NP-PS47B	01	100	1
+lec	NP-PS48A	01	100	1
+lec	NP-PS48B	01	100	1
+lec	SD-BW3	01	100	1
+lec	SD-BW4	01	100	1
+lec	SD-BW5	01	100	1
+lec	SD-BW5.ZSB	01	100	1
+lec	SD-BW6	01	100	1
+lec	SD-P12	01	100	1
+lec	SD-P13	01	100	1
+lec	SD-P14	01	100	1
+lec	SD-P15	01	100	1
+lec	SP-C17.IBC	01	100	1
+lec	SP-C18.IBC	01	100	1
+lec	SP-C18.IBPr	01	100	1
+lec	SP-C19	01	100	1
+lec	SP-CBW4.OL	01	100	1
+lec	SP-CBW4.ZB	01	100	1
+lec	SP-CBW5	01	100	1
+lec	SP-CBW5.OL	01	100	1
+lec	SP-CBW6	01	100	1
+lec	SP-CBW6.ZB	01	100	1
+lec	SP-CBW7	01	100	1
+lec	SP-CBW8	01	100	1
+lec	SP-PC15	01	100	1
+lec	SP-PC16	01	100	1
+lec	SP-PC17	01	100	1
+lec	SP-PC18	01	100	1
+lec	SP-PC19	01	100	1
+lec	SP-PC19.BHP	01	100	1
+lec	SP-PC19.IBC	01	100	1
+lec	SP-PC19.IBP	01	100	1
+lec	SP-PC20	01	100	1
+lec	SP-PK15	01	100	1
+lec	SP-PK16	01	100	1
+lec	SP-PK17	01	100	1
+lec	SP-PK18	01	100	1
+lec	SP-PK19	01	100	1
+lec	SP-PK20	01	100	1
 \.
 
 
@@ -279,7 +686,7 @@ SP-PK20	{"labs":[[15,15],[15,15],[15,15]],"teachers":[[2,2],[2,2],[2,2]]}
 -- Data for Name: tefuni_input; Type: TABLE DATA; Schema: public; Owner: tefuni
 --
 
-COPY public.tefuni_input (id, gr, semester, form, subject, hours, blocks, subjectf) FROM stdin;
+COPY public.tefuni_input (id, gr, semester, form, subject, hours, blocks, subject_full) FROM stdin;
 635	ND-BW4	3	exc	roz.pro.sta	9	0,2,0,2	Rozpoznawanie i prognozowanie stanów zagrożenia
 716	ND-BW4	3	exc	Inf.kry	9	2,0,2,0	Infrastruktura krytyczna
 1398	ND-BW4	3	exc	Sił.zbr.bez	9	2,0,2,0	Siły Zbrojne w bezpieczeństwie wewnętrznym
