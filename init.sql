@@ -17,7 +17,7 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE tefuni;
+DROP DATABASE IF EXISTS tefuni;
 --
 -- Name: tefuni; Type: DATABASE; Schema: -; Owner: tefuni
 --
